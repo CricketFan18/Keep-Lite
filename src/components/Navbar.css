@@ -2,7 +2,8 @@
     color: white;
     background-color: #F9C70C;
     padding: 0.75em 2em;
+    margin-bottom: 1.5em;
     display: flex;
     align-items: flex-end;
-    box-shadow: 5px 4px 10px 1px rgb(0 0 0 / 33%);
+    box-shadow: 0 3px 10px #b09121;    
 }

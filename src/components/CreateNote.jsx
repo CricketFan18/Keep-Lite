@@ -1,22 +1,21 @@
-import React, { useState,useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./CreateNote.css";
-
+import ColorChange from "./ColorChange";
 function CreateNote(props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [note, setNote] = useState({
     title: "",
     content: "",
-    color: ""
+    color: "",
   });
 
-  const bgColor = ["#a7f8ef","#f7fa6d","#d5b3ff","#f086be"];
+  //const bgColor = ["#a7f8ef","#f7fa6d","#d5b3ff","#f086be"];
 
-  function chooseBgColor() {
-    let index = Math.floor(Math.random() * 4);
-    return bgColor[index];
+  function handleColor(id) {
+    setNote((prev) => ({ ...prev, color: id }));
   }
 
-  const noteRef = useRef(null); 
+  const noteRef = useRef(null);
 
   function handleClickOutside(event) {
     // console.log(noteRef.current)
@@ -29,7 +28,7 @@ function CreateNote(props) {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     //console.log("mounted");
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       //console.log("unmounted");
@@ -45,21 +44,20 @@ function CreateNote(props) {
     setNote((prev) => ({ ...prev, [name]: value }));
   }
 
-
   function handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
     const newNote = {
       title: note.title,
       content: note.content,
-      color: chooseBgColor()
-    }
+      color: note.color === "" ? "#a7f8ef" : note.color,
+    };
     props.onAdd(newNote);
     setIsExpanded(false);
     setNote({
       title: "",
       content: "",
-      color: ""
+      color: "",
     });
   }
 
@@ -89,9 +87,12 @@ function CreateNote(props) {
           value={note.content}
         />
         {isExpanded && (
-          <button type="submit" className="add-btn">
-            +
-          </button>
+          <>
+            <ColorChange addColor={handleColor} />
+            <button type="submit" className="add-btn">
+              <span class="material-symbols-outlined" style={{fontSize: "34px"}} >add_circle</span>
+            </button>
+          </>
         )}
       </form>
     </>

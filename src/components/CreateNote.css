@@ -31,17 +31,13 @@ textarea {
     border-bottom-right-radius: 10px;     */
 }
 
-.add-btn {
-    background-color: #F9C70C;
+.add-btn {   
     border: none;
-    color: beige;
-    width: 30px;
-    font-size: 1.5rem;
-    border-radius: 40%;
+    color: gray;
     position: absolute;
     cursor: pointer;
-    bottom: 2px;
-    right: 5px;
+    bottom: -2px;
+    right: 10px;
 }
 
 :is(input,textarea):focus {

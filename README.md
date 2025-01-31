@@ -12,10 +12,10 @@ A lightweight and efficient note-taking app that offers local storage, customiza
 
 ## Installation
 
-git clone https://github.com/yourusername/keep-lite.git
-cd keep-lite
-npm install
-npm run dev
+- git clone https://github.com/yourusername/keep-lite.git
+- cd keep-lite
+- npm install
+- npm run dev
 
 ## Usage
 

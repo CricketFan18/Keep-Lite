@@ -6,7 +6,15 @@ function CreateNote(props) {
   const [note, setNote] = useState({
     title: "",
     content: "",
+    color: ""
   });
+
+  const bgColor = ["#a7f8ef","#f7fa6d","#d5b3ff","#f086be"];
+
+  function chooseBgColor() {
+    let index = Math.floor(Math.random() * 4);
+    return bgColor[index];
+  }
 
   const noteRef = useRef(null); 
 
@@ -41,11 +49,17 @@ function CreateNote(props) {
   function handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
-    props.onAdd(note);
+    const newNote = {
+      title: note.title,
+      content: note.content,
+      color: chooseBgColor()
+    }
+    props.onAdd(newNote);
     setIsExpanded(false);
     setNote({
       title: "",
       content: "",
+      color: ""
     });
   }
 

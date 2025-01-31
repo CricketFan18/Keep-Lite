@@ -17,6 +17,7 @@ function App() {
   }, [items]);
 
   function addItem(item) {
+    //console.log(item);
     setItems(prev => ([item, ...prev]));
   }
 
@@ -34,7 +35,7 @@ function App() {
       <CreateNote onAdd={addItem} />
       <div className="container">
         {items.map((note,index) => (
-          <Note key={index} id={index} title={note.title} content={note.content} onDel={deleteItem} />
+          <Note key={index} id={index} title={note.title} content={note.content} color={note.color} onDel={deleteItem} />
         ))}
       </div>
       <Footer />

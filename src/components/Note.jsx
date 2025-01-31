@@ -3,7 +3,7 @@ import "./Note.css";
 
 const Note = (props) => {
   return (
-    <div className="note" style={{ backgroundColor: "#d5b3ff" }}>
+    <div className="note" style={{ backgroundColor: props.color }}>
       <div className="pin">
         <div className="pin-inner"></div>
       </div>

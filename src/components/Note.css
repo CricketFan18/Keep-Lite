@@ -7,11 +7,16 @@
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     position: relative;
+    
 }
 
 .note h1 {
     font-size: 1.75rem;
     margin-bottom: 0.25em;
+}
+
+.note p {
+    overflow: hidden;
 }
 
 .pin {

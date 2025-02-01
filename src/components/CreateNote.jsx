@@ -9,29 +9,13 @@ function CreateNote(props) {
     color: "",
   });
 
-  //const bgColor = ["#a7f8ef","#f7fa6d","#d5b3ff","#f086be"];
-
-  function handleColor(id) {
-    setNote((prev) => ({ ...prev, color: id }));
-  }
-
   const noteRef = useRef(null);
-
-  function handleClickOutside(event) {
-    // console.log(noteRef.current)
-    // console.log(event.target)
-    if (noteRef.current && !noteRef.current.contains(event.target)) {
-      setIsExpanded(false);
-    }
-  }
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    //console.log("mounted");
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      //console.log("unmounted");
     };
   }, []);
 
@@ -39,9 +23,26 @@ function CreateNote(props) {
     setIsExpanded(true);
   }
 
+  function handleColor(id) {
+    setNote((prev) => ({ ...prev, color: id }));
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
     setNote((prev) => ({ ...prev, [name]: value }));
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }
+
+  function handleClickOutside(event) {
+    if (noteRef.current && !noteRef.current.contains(event.target)) {
+      setIsExpanded(false);
+    }
+    if(textareaRef.current.textContent === "") {
+      textareaRef.current.style.height = "auto";
+    }
   }
 
   function handleSubmit(e) {
@@ -59,6 +60,9 @@ function CreateNote(props) {
       content: "",
       color: "",
     });
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; 
+    }
   }
 
   return (
@@ -79,6 +83,7 @@ function CreateNote(props) {
         )}
 
         <textarea
+          ref={textareaRef}
           name="content"
           type="text"
           placeholder="Take a note..."
@@ -90,7 +95,12 @@ function CreateNote(props) {
           <>
             <ColorChange addColor={handleColor} />
             <button type="submit" className="add-btn">
-              <span class="material-symbols-outlined" style={{fontSize: "34px"}} >add_circle</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: "34px" }}
+              >
+                add_circle
+              </span>
             </button>
           </>
         )}

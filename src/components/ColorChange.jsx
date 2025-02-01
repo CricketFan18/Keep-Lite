@@ -8,11 +8,16 @@ function ColorChange(props) {
   return (
     <div
       className="color-palette"
-      onClick={(event) => {
+      onClick={(event) => {        
         const { id } = event.target;
-        setColor(id);
-        props.addColor(id);
-        setChoice(false);
+        if(id) {
+          setColor(id);
+          props.addColor(id);
+          setChoice(false);
+        } else {
+          setChoice(true);
+        }
+        
       }}
       onMouseOver={() => {
         setChoice(true);

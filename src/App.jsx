@@ -6,7 +6,7 @@ import Note from "./components/Note";
 import CreateNote from "./components/CreateNote";
 
 function App() {
-  // Local Storage Option
+  // Local Storage
   const [items, setItems] = useState(() => {
     const savedNotes = localStorage.getItem('notes');
     return savedNotes ? JSON.parse(savedNotes) : [];
@@ -17,7 +17,6 @@ function App() {
   }, [items]);
 
   function addItem(item) {
-    //console.log(item);
     setItems(prev => ([item, ...prev]));
   }
 

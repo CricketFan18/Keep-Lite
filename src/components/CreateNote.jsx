@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./CreateNote.css";
 import ColorChange from "./ColorChange";
+import { use } from "react";
+
 function CreateNote(props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [note, setNote] = useState({
-    title: "",
-    content: "",
-    color: "",
-  });
+  const [note, setNote] = useState( props.edit || {title: "",content: "",color: "",});
 
   const noteRef = useRef(null);
   const textareaRef = useRef(null);
@@ -18,6 +16,14 @@ function CreateNote(props) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(()=> {
+    if(props.edit) {
+      setIsExpanded(true);
+      setNote(props.edit);
+      textareaRef.current.focus();
+    }
+  },[props.edit])
 
   function handleClick() {
     setIsExpanded(true);
@@ -47,7 +53,6 @@ function CreateNote(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    e.stopPropagation();
     const newNote = {
       title: note.title,
       content: note.content,
@@ -93,7 +98,7 @@ function CreateNote(props) {
         />
         {isExpanded && (
           <>
-            <ColorChange addColor={handleColor} />
+            <ColorChange addColor={handleColor} onEdit={note.color} />
             <button type="submit" className="add-btn">
               <span
                 className="material-symbols-outlined"

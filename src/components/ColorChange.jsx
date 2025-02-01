@@ -3,7 +3,7 @@ import "./ColorChange.css";
 
 function ColorChange(props) {
   const [choice, setChoice] = useState(false);
-  const [color, setColor] = useState("#a7f8ef");
+  const [color, setColor] = useState( props.onEdit || "#a7f8ef");
 
   return (
     <div

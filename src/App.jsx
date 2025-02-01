@@ -12,6 +12,8 @@ function App() {
     return savedNotes ? JSON.parse(savedNotes) : [];
   });
 
+  const [edit,setEdit] = useState();
+
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(items));
   }, [items]);
@@ -27,14 +29,18 @@ function App() {
       })
     });
   }
+  function editItem(id) {
+    setEdit(items[id]);
+    deleteItem(id);
+  }
 
   return (
     <>
       <Navbar />
-      <CreateNote onAdd={addItem} />
+      <CreateNote onAdd={addItem} edit={edit} />
       <div className="container">
         {items.map((note,index) => (
-          <Note key={index} id={index} title={note.title} content={note.content} color={note.color} onDel={deleteItem} />
+          <Note key={index} id={index} title={note.title} content={note.content} color={note.color} onEdit={editItem} onDel={deleteItem} />
         ))}
       </div>
       <Footer />

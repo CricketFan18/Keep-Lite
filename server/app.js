@@ -9,12 +9,16 @@ const app = express();
 connectDB();
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",        // dev (vite)
+    "https://keep-lite.vercel.app"  // your frontend on vercel
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 
 app.use('/api/user' , userRoutes );
 app.use('/api/notes', noteRoutes );

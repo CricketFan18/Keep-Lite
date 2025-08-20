@@ -17,7 +17,7 @@ const Register = () => {
       //console.log(err);
       alert("registration failed");
     } finally {
-      navigate("/");
+      navigate("/login");
     }
   }
 

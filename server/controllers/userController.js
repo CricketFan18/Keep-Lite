@@ -14,11 +14,6 @@ export async function registerUser(req, res) {
 
   const { name, email, password } = parsed.data;
 
-  //   if (!email || !password)
-  //     return res
-  //       .status(400)
-  //       .json({ success: false, message: "Required fields missing" }); Redundant if using ZOD
-
   try {
     const existing = await User.findOne({ email });
 
@@ -72,7 +67,8 @@ export async function loginUser(req, res) {
     res.cookie("token", authToken, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
-      secure: false,
+      secure: true,
+      sameSite: "none"
     });
 
     res.status(200).json({ success: true, message: "User logged in" });
@@ -88,7 +84,8 @@ export function logoutUser(req, res) {
     res.clearCookie("token",{
       maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
-      secure: false,
+      secure: true,
+      sameSite: "none"
     });
     res.status(200).json({ success: true, message: "User logged out" });
   } catch (err) {

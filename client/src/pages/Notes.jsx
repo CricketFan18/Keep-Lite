@@ -4,16 +4,38 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
-import { fetch, addItem, deleteItem } from "../api/notesApi";
+import api from "../api/apiHandler";
 
 function App() {
   const [items, setItems] = useState([]);
   const [edit, setEdit] = useState();
 
+  async function fetch() {
+    const res = await api.get("/notes");
+    if (res.data.success) {
+      setItems(res.data.result);
+    }
+  }
+
   useEffect(() => {
-    fetch(setItems);
+    fetch();
   }, []);
 
+  async function addItem(item) {
+    const res = await api.post("/notes/create", {
+      title: item.title,
+      content: item.content,
+      color: item.color,
+    });
+    console.log(res);
+    await fetch();
+  }
+
+  async function deleteItem(id) {
+    const res = await api.delete(`/notes/${id}`);
+    console.log(res);
+    await fetch();
+  }
   function editItem(id) {
     setEdit(items.find((item) => item["_id"] === id));
     deleteItem(id);

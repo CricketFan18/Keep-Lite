@@ -1,0 +1,9 @@
+.footer {
+    text-align: center;
+    color: gray;
+    opacity: 0.75;
+    width: 100vw;
+    position: fixed;
+    bottom: 0.5vw;
+}
+

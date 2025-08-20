@@ -1,0 +1,21 @@
+.nav-outer {
+  color: white;
+  background-color: #f9c70c;
+  padding: 0.75em 2em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 3px 10px #b09121;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar {
+  display: flex;
+  align-items: flex-end;
+}
+
+.btn {
+    position: relative;
+    bottom: 2px;
+    margin-right: 0.75em;
+}
+

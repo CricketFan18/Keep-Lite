@@ -30,6 +30,31 @@ export async function createNote(req, res) {
   }
 }
 
+export async function updateNote(req, res) {
+  const { id } = req.params;
+  const userID = req.userID;
+  const { title, content, color } = req.body;
+
+  try {
+    const note = await Note.findOne({ _id: id, userID });
+
+    if (!note) {
+      return res.status(404).json({ success: false, message: "Note not found" });
+    }
+
+    if (title !== undefined) note.title = title;
+    if (content !== undefined) note.content = content;
+    if (color !== undefined) note.color = color;
+
+    await note.save();
+
+    res.status(200).json({ success: true, message: "Note Updated", note });
+  } catch (err) {
+    res.status(400).json({ success: false, message: "Server Error", errorMsg: err });
+  }
+}
+
+
 export async function deleteNote(req, res) {
   const { id } = req.params;
   try {

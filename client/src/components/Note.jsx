@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
 import "./Note.css";
 
-const Note = (props) => {
+export default function Note(props) {
   return (
     <div
-      className="note"
+      className={`note ${props.isEditing ? "editing" : ""}`}
       onClick={(e) => {
         e.preventDefault();
         props.onEdit(props.id);
       }}
-      style={{ backgroundColor: props.color }}
+      style={{ backgroundColor: props.color || "#ffffff" }}
     >
       <div className="pin">
         <div className="pin-inner"></div>
@@ -19,7 +18,7 @@ const Note = (props) => {
       <button
         className="del-btn"
         onClick={(e) => {
-          e.stopPropagation()
+          e.stopPropagation();
           e.preventDefault();
           props.onDel(props.id);
         }}
@@ -29,5 +28,3 @@ const Note = (props) => {
     </div>
   );
 };
-
-export default Note;

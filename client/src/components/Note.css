@@ -49,6 +49,12 @@
     cursor: pointer;
 }
 
+.note.editing {
+  border: 2px solid #00aaff;
+  box-shadow: 0 0 10px #00aaff50;
+}
+
+
 @media (min-width: 900px) and (max-width: 1100px) {
     .note {
         max-width: 28%;

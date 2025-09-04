@@ -6,10 +6,10 @@ import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
 import api from "../api/apiHandler";
 
-function App() {
+export default function App() {
   const [items, setItems] = useState([]);
-  const [edit, setEdit] = useState();
-  const [loading, setLoading] = useState(false); // 👈 track loading for notes state
+  const [edit, setEdit] = useState(null); // currently editing note
+  const [loading, setLoading] = useState(false);
 
   async function fetch() {
     setLoading(true);
@@ -32,14 +32,26 @@ function App() {
   async function addItem(item) {
     setLoading(true);
     try {
-      await api.post("/notes/create", {
-        title: item.title,
-        content: item.content,
-        color: item.color,
-      });
+      if (edit) {
+        // If editing, send PUT request
+        await api.put(`/notes/${edit._id}`, {
+          title: item.title,
+          content: item.content,
+          color: item.color,
+        });
+        setEdit(null); // clear edit state
+      } else {
+        // Otherwise, create a new note
+        await api.post("/notes/create", {
+          title: item.title,
+          content: item.content,
+          color: item.color,
+        });
+      }
+
       await fetch();
     } catch (err) {
-      console.error("Error adding note:", err);
+      console.error("Error adding/updating note:", err);
     } finally {
       setLoading(false);
     }
@@ -57,9 +69,8 @@ function App() {
     }
   }
 
-  function editItem(id) {
-    setEdit(items.find((item) => item["_id"] === id));
-    deleteItem(id);
+  function editItem(note) {
+    setEdit(note);
   }
 
   return (
@@ -77,13 +88,14 @@ function App() {
       <div className="container">
         {items.map((note) => (
           <Note
-            key={note["_id"]}
-            id={note["_id"]}
+            key={note._id}
+            id={note._id}
             title={note.title}
             content={note.content}
             color={note.color}
-            onEdit={editItem}
+            onEdit={(id) => setEdit(items.find((n) => n._id === id))}
             onDel={deleteItem}
+            isEditing={edit?._id === note._id}
           />
         ))}
       </div>
@@ -92,5 +104,3 @@ function App() {
     </>
   );
 }
-
-export default App;

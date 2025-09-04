@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import api from "../api/apiHandler";
+import LoaderScreen from "./LoaderScreen";
 
 const ProtectedRoute = () => {
   const [isAuth, setIsAuth] = useState(null);
@@ -22,7 +23,7 @@ const ProtectedRoute = () => {
     verify();
   }, []);
 
-  if (isAuth === null) return <div>Loading...</div>;
+  if (isAuth === null) return <LoaderScreen message="Loading.." />;
 
   return isAuth ? <Outlet /> : <Navigate to="/login" />;
 };

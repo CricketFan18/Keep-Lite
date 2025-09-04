@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import "./LoaderScreen.css";
 
-const LoaderScreen = ({ message = "Authenticating..." }) => {
+const LoaderScreen = ({ message}) => {
   return (
     <div className="loader-screen">
       <Loader2 className="loader-icon" />

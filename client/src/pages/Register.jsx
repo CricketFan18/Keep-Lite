@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import "./Home.css";
 import api from "../api/apiHandler";
 import "../index.css";
+import "./Home.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const Register = () => {
           <input type="email" name="email" placeholder="example@gmail.com" />
           <label htmlFor="password">Password :</label>
           <input type="password" name="password" />
-          <button>Register</button>
+          <button className="btn">Register</button>
         </form>
       </div>
     </div>

@@ -11,10 +11,9 @@ export default function Navbar(props) {
     try {
       const { data } = await api.post("/user/logout");
       if (!data.success) throw new Error("Logout failed");
+      localStorage.removeItem("keep_lite_notes");
       navigate("/login");
-      //console.log("Logout successful:", data);
     } catch (err) {
-      //console.error("Logout error:", err);
       alert("Error in logging out !!");
     }
   }

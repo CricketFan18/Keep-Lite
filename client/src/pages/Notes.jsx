@@ -14,14 +14,29 @@ export default function Notes() {
   const [hasMore, setHasMore] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // Fetch only happens on load or when loading more pages
+
   async function fetchNotes(pageNum = 1) {
-    setLoading(true);
+    // SWR CACHE LOGIC (Only apply to the first page)
+    if (pageNum === 1) {
+      const cachedNotes = localStorage.getItem("keep_lite_notes");
+      if (cachedNotes) {
+        // Inject cached notes immediately.
+        setItems(JSON.parse(cachedNotes)); 
+      } else {
+        setLoading(true); // Only show spinner if zero cache (first time login)
+      }
+    } else {
+      setLoading(true); // Show spinner for loading page 2, 3, etc.
+    }
+
     try {
       const res = await api.get(`/notes?page=${pageNum}`);
       if (res.data.success) {
         if (pageNum === 1) {
-          setItems(res.data.result);
+          setItems(res.data.result); // Swap in the fresh data from the server
+          
+          // NEW: Save this fresh page 1 data to the browser for next time
+          localStorage.setItem("keep_lite_notes", JSON.stringify(res.data.result));
         } else {
           setItems((prev) => [...prev, ...res.data.result]);
         }
@@ -53,20 +68,23 @@ export default function Notes() {
 
   async function addItem(item) {
     setIsSyncing(true);
+    
     try {
       if (edit) {
-        // Change it locally immediately
-        setItems(items.map(n => n._id === edit._id ? { ...n, ...item } : n));
+        const updatedItems = items.map(n => n._id === edit._id ? { ...n, ...item } : n);
+        setItems(updatedItems);
+        localStorage.setItem("keep_lite_notes", JSON.stringify(updatedItems));
+        
         setEdit(null); 
         
-        // Let the server catch up in the background
         await api.put(`/notes/${edit._id}`, item);
       } else {
-        // Create note
         const res = await api.post("/notes/create", item);
         if (res.data.success) {
-          // Inject the new note straight into state
-          setItems([res.data.note, ...items]); 
+          const newItemsArray = [res.data.note, ...items];
+          
+          setItems(newItemsArray); 
+          localStorage.setItem("keep_lite_notes", JSON.stringify(newItemsArray));
         }
       }
     } catch (err) {
@@ -79,8 +97,9 @@ export default function Notes() {
 
   async function deleteItem(id) {
     setIsSyncing(true);
-    // Hide it instantly!
-    setItems(items.filter((note) => note._id !== id));
+    const filteredItems = items.filter((note) => note._id !== id);
+    setItems(filteredItems);
+    localStorage.setItem("keep_lite_notes", JSON.stringify(filteredItems));
     
     try {
       await api.delete(`/notes/${id}`);

@@ -4,9 +4,12 @@ import userRoutes from './routes/userRoutes.js'
 import noteRoutes from './routes/noteRoutes.js'
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
+import compression from "compression";
+
 const app = express();
 
 connectDB();
+app.use(compression())
 app.use(cookieParser());
 app.use(express.json());
 

@@ -6,17 +6,26 @@ import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
 import api from "../api/apiHandler";
 
-export default function App() {
+export default function Notes() {
   const [items, setItems] = useState([]);
-  const [edit, setEdit] = useState(null); // currently editing note
+  const [edit, setEdit] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  async function fetch() {
+  // Fetch only happens on load or when loading more pages
+  async function fetchNotes(pageNum = 1) {
     setLoading(true);
     try {
-      const res = await api.get("/notes");
+      const res = await api.get(`/notes?page=${pageNum}`);
       if (res.data.success) {
-        setItems(res.data.result);
+        if (pageNum === 1) {
+          setItems(res.data.result);
+        } else {
+          setItems((prev) => [...prev, ...res.data.result]);
+        }
+        setHasMore(res.data.hasMore);
       }
     } catch (err) {
       console.error("Error fetching notes:", err);
@@ -26,64 +35,67 @@ export default function App() {
   }
 
   useEffect(() => {
-    fetch();
+    fetchNotes(1);
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isSyncing) {
+        // This triggers the browser's built-in "Are you sure you want to leave?" prompt
+        e.preventDefault();
+        e.returnValue = ""; 
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isSyncing]);
+
   async function addItem(item) {
-    setLoading(true);
+    setIsSyncing(true);
     try {
       if (edit) {
-        // If editing, send PUT request
-        await api.put(`/notes/${edit._id}`, {
-          title: item.title,
-          content: item.content,
-          color: item.color,
-        });
-        setEdit(null); // clear edit state
+        // Change it locally immediately
+        setItems(items.map(n => n._id === edit._id ? { ...n, ...item } : n));
+        setEdit(null); 
+        
+        // Let the server catch up in the background
+        await api.put(`/notes/${edit._id}`, item);
       } else {
-        // Otherwise, create a new note
-        await api.post("/notes/create", {
-          title: item.title,
-          content: item.content,
-          color: item.color,
-        });
+        // Create note
+        const res = await api.post("/notes/create", item);
+        if (res.data.success) {
+          // Inject the new note straight into state
+          setItems([res.data.note, ...items]); 
+        }
       }
-
-      await fetch();
     } catch (err) {
       console.error("Error adding/updating note:", err);
+      fetchNotes(1); // Only re-fetch if something actually crashed
     } finally {
-      setLoading(false);
+      setIsSyncing(false);
     }
   }
 
   async function deleteItem(id) {
-    setLoading(true);
+    setIsSyncing(true);
+    // Hide it instantly!
+    setItems(items.filter((note) => note._id !== id));
+    
     try {
       await api.delete(`/notes/${id}`);
-      await fetch();
     } catch (err) {
       console.error("Error deleting note:", err);
+      fetchNotes(1); // Revert if server fails
     } finally {
-      setLoading(false);
+      setIsSyncing(false);
     }
-  }
-
-  function editItem(note) {
-    setEdit(note);
   }
 
   return (
     <>
-      <Navbar />
+      <Navbar isSyncing={isSyncing} />
       <CreateNote onAdd={addItem} edit={edit} />
-
-      {loading && (
-        <div className="spinner-container">
-          <div className="spinner"></div>
-          <p>Updating notes...</p>
-        </div>
-      )}
 
       <div className="container">
         {items.map((note) => (
@@ -99,6 +111,29 @@ export default function App() {
           />
         ))}
       </div>
+
+      {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+          <p>Loading notes...</p>
+        </div>
+      )}
+
+      {/* Load More Button */}
+      {hasMore && !loading && (
+        <div style={{ textAlign: "center", margin: "20px 0" }}>
+          <button 
+            className="btn" 
+            onClick={() => {
+              const nextPage = page + 1;
+              setPage(nextPage);
+              fetchNotes(nextPage);
+            }}
+          >
+            Load More Notes
+          </button>
+        </div>
+      )}
 
       <Footer />
     </>

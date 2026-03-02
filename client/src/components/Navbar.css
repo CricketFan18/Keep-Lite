@@ -19,3 +19,8 @@
     margin-right: 0.75em;
 }
 
+.utility {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}

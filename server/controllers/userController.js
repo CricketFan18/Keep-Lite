@@ -92,3 +92,9 @@ export function logoutUser(req, res) {
     res.status(500).json({ success: false, message: "Server Error", error: err });
   }
 }
+
+//  verification controller
+export function verifyUser(req, res) {
+  // If the authenticate middleware passes, they are logged in!
+  res.status(200).json({ success: true, message: "User is authenticated" });
+}

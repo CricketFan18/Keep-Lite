@@ -3,7 +3,9 @@ import api from "../api/apiHandler";
 import "../index.css";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar(props) {
+  console.log(props);
+  
   const navigate = useNavigate();
   async function logout() {
     try {
@@ -32,9 +34,15 @@ export default function Navbar() {
           edit_note
         </span>
       </div>
-      <button className="btn" onClick={logout}>
-        Logout
-      </button>
+      <div className="utility" >
+        <div className="sync-status" >
+          {props.isSyncing ? "Saving to cloud..." : "All changes saved"}
+        </div>
+        <button className="btn" onClick={logout}>
+          Logout
+        </button>
+      </div>
+
     </div>
   );
 }

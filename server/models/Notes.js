@@ -8,6 +8,7 @@ const noteSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",       // ← foreign key
     required: true,
+    index: true // optimization for faster fetch
   },
 }, { timestamps: true });
 

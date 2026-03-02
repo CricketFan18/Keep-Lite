@@ -8,7 +8,8 @@ const ProtectedRoute = () => {
 
   async function checkAuth() {
     try {
-      const res = await api.get("/notes");
+      // CHANGED: Now hitting the lightweight verify endpoint
+      const res = await api.get("/user/verify"); 
       return res.data.success;
     } catch (err) {
       return false;
@@ -27,4 +28,5 @@ const ProtectedRoute = () => {
 
   return isAuth ? <Outlet /> : <Navigate to="/login" />;
 };
+
 export default ProtectedRoute;
